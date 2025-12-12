@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>磁力链接在线播放器</title>
+  <script src="https://cdn.jsdelivr.net/npm/webtorrent@latest/webtorrent.min.js"></script>
+  <style>
+    body { font-family: Arial; text-align: center; padding: 50px; background:#000; color:#fff;}
+    video { max-width: 95%; margin: 20px 0; border:10px solid #333; border-radius:10px;}
+    input { width: 80%; padding: 10px; font-size: 16px;}
+  </style>
+</head>
+<body>
+  <h1>磁力链接在线播放器</h1>
+  <input type="text" id="magnet" placeholder="粘贴磁力链接 magnet:?xt=urn:btih:..." style="width:80%;padding:10px;font-size:16px;"><br><br>
+  <button onclick="play()">播放</button>
+  <div id="player"></div>
+
+  <script>
+    const client = new WebTorrent();
+    function play() {
+      const magnetURI = document.getElementById('magnet').value;
+      if (!magnetURI) return alert('请粘贴磁力链接');
+      
+      client.add(magnetURI, function (torrent) {
+        // 找到最大的视频文件（一般是第一个最大的）
+        const file = torrent.files.reduce((a, b) => a.length > b.length ? a : b);
+        
+        file.renderTo('#player', {autoplay: true, controls: true}, function (video) {
+          video.style.width = '100%';
+        });
+      });
+    }
+  </script>
+</body>
+</html>
